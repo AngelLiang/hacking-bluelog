@@ -4,7 +4,7 @@
 
 ## 博客后台使用的模板
 
-path: `/bluelog/templates/admin/`
+path: `bluelog/templates/admin/`
 
 | 名称 | 说明 |
 |---|---|
