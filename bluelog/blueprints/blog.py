@@ -34,6 +34,7 @@ def about():
 @blog_bp.route('/category/<int:category_id>')
 def show_category(category_id):
     """显示分类文章列表"""
+
     # SELECT * FROM category WHERE category.id = ?
     category = Category.query.get_or_404(category_id)
     page = request.args.get('page', 1, type=int)
@@ -44,6 +45,11 @@ def show_category(category_id):
     # 所以我们使用`with_parent()`查询方法传入分类对象，最终筛选出属于该分类的所有文章记录。
     # SELECT * FROM post WHERE ? = post.category_id ORDER BY post.timestamp DESC LIMIT ? OFFSET ?
     pagination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).paginate(page, per_page)
+    
+    # 或者使用下面的语句进行查询，其SQL语句为：
+    # SELECT * FROM post WHERE post.category_id = ? ORDER BY post.timestamp DESC LIMIT ? OFFSET ?
+    # pagination = Post.query.filter_by(category_id=category.id).order_by(Post.timestamp.desc()).paginate(page, per_page)
+
     posts = pagination.items
 
     return render_template('blog/category.html', category=category, pagination=pagination, posts=posts)
@@ -54,6 +60,9 @@ def show_post(post_id):
     post = Post.query.get_or_404(post_id)
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['BLUELOG_COMMENT_PER_PAGE']
+
+    # 获取文章的评论并进行分页
+    # `filter_by(reviewed=True)`：筛选出通过审核的评论记录
     pagination = Comment.query.with_parent(post).filter_by(reviewed=True).order_by(Comment.timestamp.asc()).paginate(
         page, per_page)
     comments = pagination.items
