@@ -33,11 +33,19 @@ def about():
 
 @blog_bp.route('/category/<int:category_id>')
 def show_category(category_id):
+    """显示分类文章列表"""
+    # SELECT * FROM category WHERE category.id = ?
     category = Category.query.get_or_404(category_id)
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['BLUELOG_POST_PER_PAGE']
+    
+    # 如果直接调用`category.posts`，会以列表的形式返回该分类下的所有文章对象，
+    # 但是我们需要对这些文章记录附加其他查询过滤器和方法，所以不能使用这个方法。
+    # 所以我们使用`with_parent()`查询方法传入分类对象，最终筛选出属于该分类的所有文章记录。
+    # SELECT * FROM post WHERE ? = post.category_id ORDER BY post.timestamp DESC LIMIT ? OFFSET ?
     pagination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).paginate(page, per_page)
     posts = pagination.items
+
     return render_template('blog/category.html', category=category, pagination=pagination, posts=posts)
 
 
