@@ -4,6 +4,9 @@
     :url: http://greyli.com
     :copyright: © 2018 Grey Li <withlihui@gmail.com>
     :license: MIT, see LICENSE for more details.
+
+笔记：
+    后台管理模块
 """
 from flask import render_template, flash, redirect, url_for, request, current_app, Blueprint
 from flask_login import login_required, current_user

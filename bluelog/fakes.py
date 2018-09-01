@@ -4,6 +4,9 @@
     :url: http://greyli.com
     :copyright: © 2018 Grey Li <withlihui@gmail.com>
     :license: MIT, see LICENSE for more details.
+
+笔记：
+    生成虚拟数据模块
 """
 import random
 
