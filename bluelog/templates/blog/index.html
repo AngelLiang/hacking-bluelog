@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/pagination.html' import render_pager %}
+{# {% from 'bootstrap/pagination.html' import render_pagination %} #}
 
 {% block title %}Home{% endblock %}
 
@@ -13,6 +14,8 @@
             {% include 'blog/_posts.html' %}
             {% if posts %}
                 <div class="page-footer">{{ render_pager(pagination) }}</div>
+                {# 也可使用`render_pagination()`渲染 #}
+                {# <div class="page-footer">{{ render_pagination(pagination) }}</div> #}
             {% endif %}
         </div>
         <div class="col-sm-4 sidebar">

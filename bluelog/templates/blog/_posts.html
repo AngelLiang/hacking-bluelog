@@ -1,10 +1,13 @@
 {% if posts %}
     {% for post in posts %}
+        {# 文章标题 #}
         <h3 class="text-primary"><a href="{{ url_for('.show_post', post_id=post.id) }}">{{ post.title }}</a></h3>
+        {# 文章摘要 #}
         <p>
             {{ post.body|striptags|truncate }}
             <small><a href="{{ url_for('.show_post', post_id=post.id) }}">Read More</a></small>
         </p>
+        {# 评论和标签 #}
         <small>
             Comments: <a href="{{ url_for('.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>&nbsp;&nbsp;
             Category: <a
