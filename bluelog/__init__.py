@@ -102,6 +102,10 @@ def register_shell_context(app):
 
 
 def register_template_context(app):
+    """
+    注册模板上下文
+    避免在每个视图函数中渲染模板时重复传入以下数据
+    """
     @app.context_processor
     def make_template_context():
         admin = Admin.query.first()

@@ -4,6 +4,9 @@
     :url: http://greyli.com
     :copyright: © 2018 Grey Li <withlihui@gmail.com>
     :license: MIT, see LICENSE for more details.
+
+笔记：
+    表单模块
 """
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
@@ -59,6 +62,12 @@ class CommentForm(FlaskForm):
 
 
 class AdminCommentForm(CommentForm):
+    """
+    继承CommentForm类
+    在这个表单中，姓名、Email、站点字段使用HiddenField类重新定义。
+    这个类型代表隐藏字段，即HTML中的<input type="hidden">。
+    因为管理员不需要填写这些字段。
+    """
     author = HiddenField()
     email = HiddenField()
     site = HiddenField()
