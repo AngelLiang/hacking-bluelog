@@ -51,7 +51,8 @@ def fake_posts(count=50):
             title=fake.sentence(),
             body=fake.text(2000),
             category=Category.query.get(random.randint(1, Category.query.count())),
-            timestamp=fake.date_time_this_year()
+            # timestamp=fake.date_time_this_year()      # modify this
+            timestamp=fake.past_datetime('-1y')
         )
 
         db.session.add(post)
@@ -60,49 +61,55 @@ def fake_posts(count=50):
 
 def fake_comments(count=500):
     for i in range(count):
+        post = Post.query.get(random.randint(1, Post.query.count()))
         comment = Comment(
             author=fake.name(),
             email=fake.email(),
             site=fake.url(),
             body=fake.sentence(),
-            timestamp=fake.date_time_this_year(),
+            # timestamp=fake.date_time_this_year(),     # modify this
+            timestamp=fake.date_time_between_dates(datetime_start=post.timestamp),
             reviewed=True,
-            post=Post.query.get(random.randint(1, Post.query.count()))
+            post=post
         )
         db.session.add(comment)
 
     salt = int(count * 0.1)
     for i in range(salt):
         # unreviewed comments
+        post = Post.query.get(random.randint(1, Post.query.count()))
         comment = Comment(
             author=fake.name(),
             email=fake.email(),
             site=fake.url(),
             body=fake.sentence(),
-            timestamp=fake.date_time_this_year(),
+            # timestamp=fake.date_time_this_year(),     # modify this
+            timestamp=fake.date_time_between_dates(datetime_start=post.timestamp),
             reviewed=False,
-            post=Post.query.get(random.randint(1, Post.query.count()))
+            post=post
         )
         db.session.add(comment)
 
         # from admin
+        post = Post.query.get(random.randint(1, Post.query.count()))
         comment = Comment(
             author='Mima Kirigoe',
             email='mima@example.com',
             site='example.com',
             body=fake.sentence(),
-            timestamp=fake.date_time_this_year(),
+            # timestamp=fake.date_time_this_year(),     # modify this
+            timestamp=fake.date_time_between_dates(datetime_start=post.timestamp),
             from_admin=True,
             reviewed=True,
-            post=Post.query.get(random.randint(1, Post.query.count()))
+            post=post
         )
         db.session.add(comment)
     db.session.commit()
 
     # replies
     for i in range(salt):
-        parent_comment = Comment.query.get(random.randint(1, Comment.query.count()))
-        comment = Comment(
+        comment = Comment.query.get(random.randint(1, Comment.query.count()))
+        reply = Comment(
             author=fake.name(),
             email=fake.email(),
             site=fake.url(),
@@ -113,11 +120,11 @@ def fake_comments(count=500):
             # post=Post.query.get(random.randint(1, Post.query.count()))
 
             # 确保回复的时间在评论的时间之后，并且不超过现在的时间
-            timestamp=fake.date_time_between_dates(parent_comment.timestamp),
-            replied=parent_comment,     # 关联评论
-            post=parent_comment.post    # 回复与评论是同一篇文章
+            timestamp=fake.date_time_between_dates(datetime_start=comment.timestamp),
+            replied=comment,     # 关联评论
+            post=comment.post    # 回复与评论是同一篇文章
         )
-        db.session.add(comment)
+        db.session.add(reply)
     db.session.commit()
 
 
