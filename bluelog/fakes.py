@@ -17,7 +17,7 @@ from bluelog import db
 from bluelog.models import Admin, Category, Post, Comment, Link
 
 fake = Faker()
-
+# fake = Faker("zh_CN")
 
 def fake_admin():
     admin = Admin(
@@ -101,15 +101,21 @@ def fake_comments(count=500):
 
     # replies
     for i in range(salt):
+        parent_comment = Comment.query.get(random.randint(1, Comment.query.count()))
         comment = Comment(
             author=fake.name(),
             email=fake.email(),
             site=fake.url(),
             body=fake.sentence(),
-            timestamp=fake.date_time_this_year(),
             reviewed=True,
-            replied=Comment.query.get(random.randint(1, Comment.query.count())),
-            post=Post.query.get(random.randint(1, Post.query.count()))
+            # timestamp=fake.date_time_this_year(),            
+            # replied=Comment.query.get(random.randint(1, Comment.query.count())),
+            # post=Post.query.get(random.randint(1, Post.query.count()))
+
+            # 确保回复的时间在评论的时间之后，并且不超过现在的时间
+            timestamp=fake.date_time_between_dates(parent_comment.timestamp),
+            replied=parent_comment,     # 关联评论
+            post=parent_comment.post    # 回复与评论是同一篇文章
         )
         db.session.add(comment)
     db.session.commit()
