@@ -1,6 +1,6 @@
-# Hacking Bluelog at 2018-09-01
+# Hacking Bluelog from 2018-09-01
 
-深入学习Bluelog源码
+深入学习Bluelog源码。
 
 ## 博客后台使用的模板
 
