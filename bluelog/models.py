@@ -36,6 +36,7 @@ class Category(db.Model):
     posts = db.relationship('Post', back_populates='category')
 
     def delete(self):
+        """删除方法，删除其他分类后会把文章放回默认分类"""
         default_category = Category.query.get(1)
         posts = self.posts[:]
         for post in posts:
